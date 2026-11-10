@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistem Klasifikasi Mahasiswa</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f1f5f9;color:#172033;font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#17324d,#2563eb);color:white;padding:34px 5%}
+header h1{margin:0 0 10px;font-size:clamp(24px,4vw,34px)}header p{margin:0;line-height:1.5}
+main{max-width:1100px;margin:auto;padding:25px 18px 45px}h2{color:#17324d;margin:28px 0 14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px}
+.card,.panel,.tablebox{background:white;border:1px solid #e2e8f0;border-radius:13px;padding:17px}
+.card small{display:block;color:#64748b;margin-bottom:9px}.card strong{font-size:29px;color:#17324d}
+.panel{line-height:1.9}.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pill{background:#eaf1ff;color:#1e40af;padding:6px 10px;border-radius:20px;font-size:13px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+input,select{padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px}
+input{flex:1;min-width:200px}.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{text-align:left;padding:13px;border-bottom:1px solid #e2e8f0;font-size:14px}th{background:#f8fafc}
+.tag{padding:6px 9px;border-radius:20px;font-size:12px;font-weight:bold}
+.both{background:#dcfce7;color:#166534}.attendance{background:#dbeafe;color:#1d4ed8}
+.grade{background:#fef3c7;color:#92400e}.neither{background:#fee2e2;color:#991b1b}
+footer{text-align:center;color:#64748b;padding:20px;font-size:13px}
+</style></head><body>
+<header><h1>Sistem Klasifikasi Data Mahasiswa</h1>
+<p>PJBL-2 menggunakan teori himpunan: gabungan, irisan, selisih, dan komplemen.</p></header>
+<main>
+<h2>Ringkasan Data</h2>
+<div class="cards">
+<div class="card"><small>Total mahasiswa (U)</small><strong>{{r.total}}</strong></div>
+<div class="card"><small>Kehadiran ≥ 80% (A)</small><strong>{{r.kehadiran}}</strong></div>
+<div class="card"><small>Nilai ≥ 80 (B)</small><strong>{{r.nilai}}</strong></div>
+<div class="card"><small>Irisan A ∩ B</small><strong>{{r.irisan}}</strong></div>
+<div class="card"><small>Gabungan A ∪ B</small><strong>{{r.gabungan}}</strong></div>
+</div>
+<h2>Operasi Himpunan</h2><div class="panel">
+<b>A − B:</b> {{r.hanya_kehadiran}} mahasiswa (kehadiran tinggi saja)<br>
+<b>B − A:</b> {{r.hanya_nilai}} mahasiswa (nilai tinggi saja)<br>
+<b>U − (A ∪ B):</b> {{r.belum}} mahasiswa (belum memenuhi keduanya)
+<div class="pills"><span class="pill">A = Kehadiran ≥ 80%</span><span class="pill">B = Nilai ≥ 80</span><span class="pill">U = Semua mahasiswa</span></div>
+</div>
+<h2>Tabel Klasifikasi Mahasiswa</h2><div class="tablebox">
+<div class="tools"><input id="cari" placeholder="Cari nama atau ID..." oninput="filterData()">
+<select id="filter" onchange="filterData()"><option value="">Semua kategori</option>
+<option>Keduanya tinggi</option><option>Kehadiran tinggi saja</option><option>Nilai tinggi saja</option><option>Belum memenuhi keduanya</option></select></div>
+<div class="scroll"><table id="tabel"><thead><tr><th>ID</th><th>Nama</th><th>Kehadiran</th><th>Nilai akhir</th><th>Klasifikasi</th></tr></thead><tbody>
+{% for m in data %}<tr><td>{{m.id}}</td><td>{{m.nama}}</td><td>{{m.kehadiran_persen}}%</td><td>{{m.nilai_akhir}}</td><td><span class="tag {{m.kelas}}">{{m.kategori}}</span></td></tr>{% endfor %}
+</tbody></table></div></div></main>
+<footer>PJBL-2 | Dataset simulasi mahasiswa</footer>
+<script>
+function filterData(){let q=document.getElementById('cari').value.toLowerCase(),k=document.getElementById('filter').value;
+document.querySelectorAll('#tabel tbody tr').forEach(row=>{let match=row.innerText.toLowerCase().includes(q);
+let matchK=!k||row.cells[4].innerText.trim()===k;row.style.display=match&&matchK?'':'none';});}
+</script></body></html>
